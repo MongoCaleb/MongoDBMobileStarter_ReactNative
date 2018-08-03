@@ -7,13 +7,17 @@ exports.initStitchClient = function() {
    return new Promise(function (resolve, reject) {
       stitch.Stitch.initializeDefaultAppClient(config.STITCH_APP_ID)
       .then(client => {
+         /** After we have the Stitch client, we set up any service clients
+          *  we need. In this case, we'll set up an Atlas client so we can 
+          *  make calls to Atlas directly.
+          * */
          atlasClient = client.getServiceClient(stitch.RemoteMongoClient.factory, "mongodb-atlas");
          resolve(client);
       });
    });
 };
 
-/// Stitch Authentication handlers
+// ** Stitch Authentication handlers ** //
 
 // see https://docs.mongodb.com/stitch/authentication/anonymous/
 exports.logonAnonymous = function(client) {
@@ -93,7 +97,10 @@ exports.logonWithGoogle = function(client) {
    });
 };
 
-
+/**
+ * Logs out the currently-authenticated user.
+ * @param {*} client 
+ * */
 exports.logout = function(client) {
    return new Promise(function (resolve, reject) {
       client.auth.logout().then(user => {
@@ -101,9 +108,15 @@ exports.logout = function(client) {
       })
    });
 }
-/// End Stitch Authentication handlers
+// ** End Stitch Authentication handlers ** //
 
-//Call a Stitch Function with an optional array of params
+/** Calls a Stitch Function with an optional array of params.
+ * 
+ * @param {*} client -   the Stitch client 
+ * @param {*} funcName - the name of the Stitch function to call
+ * @param {*} params -   any number of string values that will get sent to 
+ *                       the Stitch Function as args.
+ */
 exports.callFunction = function(client, funcName, ...params) {
    return new Promise(function (resolve, reject) {
       client.callFunction(funcName, params)
@@ -117,6 +130,12 @@ exports.callFunction = function(client, funcName, ...params) {
    })
 }
 
+/**
+ * Makes a direct call to Atlas, finding all documents in the specified
+ * database and collection. 
+ * @param {*} dbName -         the name of the database
+ * @param {*} collectionName - the name of the collection
+ */
 exports.findAllDocs = function(dbName, collectionName) {
    return new Promise(function (resolve, reject) {
       try{

@@ -12,8 +12,7 @@ export default class App extends React.Component {
 			client: undefined,
 			results: undefined,
 			funcResults: '',
-			modalVisible: false,
-			name: 'Aimee'
+			modalVisible: false
 		};
 
 		this._onPressLogin = this._onPressLogin.bind(this);
@@ -23,6 +22,9 @@ export default class App extends React.Component {
 	}
 
 	componentDidMount() {
+		/**
+		 * Initialize the Stitch client on load
+		 */
 		stitch.initStitchClient().then(client=>{
 			this.setState({client: client});
 			if(client.auth.isLoggedIn) {
@@ -36,63 +38,39 @@ export default class App extends React.Component {
 	}
 
 	render() {
-
 		let loginStatus = "You are currently logged out."
 		if(this.state.currentUserId) {
 			loginStatus = `You are logged in as user \'${this.state.currentUserId}\'.`
 		}
 
-		loginButton = <Button
-							onPress={this._onPressLogin}
-							title="Login"
+		loginButton = <Button onPress={this._onPressLogin} title="Login"
 							color='green'/>
 
-		logoutButton = <Button
-							onPress={this._onPressLogout}
-							title="Logout"
+		logoutButton = <Button onPress={this._onPressLogout} title="Logout"
 							color='palevioletred'/>
 
-		getData = <Button
-							onPress={this._onPressGetData}
-							title="Get Data"
-							style={styles.button}/>
+		getData = <Button onPress={this._onPressGetData} title="Get Data" />
+		callFunc = <Button onPress={this._onPressCallFunction} 
+						title="Call Function"
+						color='mediumslateblue'/>
 
-		callFunc = <View style={{flex:0.1, flexDirection:'row'}}>
-						<View style={{height: 40, borderWidth: 1,  flexDirection:'row', flexGrow:0.5}}>
-							<Text>Name: </Text>
-							
-							<TextInput
-								onChangeText={(name) => this.setState({name:name})}
-								value={this.state.name}
-							/>
-							</View>
-						<Button
-							onPress={this._onPressCallFunction}
-							title="Call Function"
-						/>
-						</View>
-
-		dataModal = <Modal
-			animationType="slide"
+		dataModal = <Modal 
+			animationType="slide" 
 			transparent={false}
 			visible={this.state.modalVisible}
-			onRequestClose={() => {
-
-			}}>
-
-			<View>
-				<Button
-					title = '[X] Close this modal'
-					onPress={() => {
-					this.setState({modalVisible: false});
-					}}>
-				</Button>
-				<ScrollView> 
-					<Text style={styles.results}>{this.state.results} </Text>
-				</ScrollView>
-			</View>
-
-		</Modal>
+			onRequestClose={() => {}}>
+				<View>
+					<Button
+						title = '[X] Close this modal'
+						onPress={() => {
+						this.setState({modalVisible: false});
+						}}>
+					</Button>
+					<ScrollView> 
+						<Text style={styles.results}>{this.state.results} </Text>
+					</ScrollView>
+				</View>
+			</Modal>
 
 		return (
 			<View style={styles.container}>
@@ -113,8 +91,12 @@ export default class App extends React.Component {
 		);
 	}
 
+	/**
+	 * Calls the Stitch helper function for whichever Stitch auth provider 
+	 * your Stitch app is using. 
+	 * Change 'stitch.logonWithApiKey' to the function that meets your needs.
+	 */
 	_onPressLogin() {
-
 		stitch.logonWithApiKey(this.state.client)
 		.then(user=>{
 			console.log(`Successfully logged in as user ${user.id}`);
@@ -126,7 +108,6 @@ export default class App extends React.Component {
 	}
 
 	_onPressLogout() {
-
 		stitch.logout(this.state.client).then(user=>{
 			console.log(`Successfully logged out`);
 			this.setState({ currentUserId: undefined, results: '', funcResults: '' })
@@ -148,7 +129,7 @@ export default class App extends React.Component {
 	}
 
 	_onPressCallFunction() {
-		stitch.callFunction(this.state.client, "SayHello", this.state.name, "some other value")
+		stitch.callFunction(this.state.client, "SayHello", "arg1", "arg2")
 		.then(result=>{
 			this.setState({funcResults: result});
 		})
