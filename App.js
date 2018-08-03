@@ -117,8 +117,15 @@ export default class App extends React.Component {
 		});
 	}
 
+	/**
+	 * Calls the "find" stitch helper function. In this example, we are 
+	 * requesting all documents from the HR.employees collection where 
+	 * the "employeeId" field has a value of 854271626.
+	 * Try changing the query to an empty object ( { } ) to return all
+	 * documents in the collection.
+	 */
 	_onPressGetData() {
-		stitch.findAllDocs("HR", "employees").then(result => {
+		stitch.find("HR", "employees", {"employeeId": 854271626}).then(result => {
 			this.setState({results: JSON.stringify(result, null, 3)});
 			this.setState({modalVisible: true});
 		})

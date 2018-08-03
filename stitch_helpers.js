@@ -17,8 +17,7 @@ exports.initStitchClient = function() {
    });
 };
 
-// ** Stitch Authentication handlers ** //
-
+// ** Stitch Authentication Handlers ** //
 // see https://docs.mongodb.com/stitch/authentication/anonymous/
 exports.logonAnonymous = function(client) {
    return new Promise(function (resolve, reject) {
@@ -108,7 +107,10 @@ exports.logout = function(client) {
       })
    });
 }
-// ** End Stitch Authentication handlers ** //
+
+// ** End Stitch Authentication Handlers ** //
+
+// ** Data-Related Functions ** //
 
 /** Calls a Stitch Function with an optional array of params.
  * 
@@ -131,15 +133,17 @@ exports.callFunction = function(client, funcName, ...params) {
 }
 
 /**
- * Makes a direct call to Atlas, finding all documents in the specified
- * database and collection. 
+ * Makes a direct call to Atlas, finding documents in the specified
+ * database and collection according to the provided query filter. 
  * @param {*} dbName -         the name of the database
  * @param {*} collectionName - the name of the collection
+ * @param {*} queryFilter - a BSON object defining the query.
  */
-exports.findAllDocs = function(dbName, collectionName) {
+exports.find = function(dbName, collectionName, queryFilter) {
    return new Promise(function (resolve, reject) {
       try{
-         atlasClient.db(dbName).collection(collectionName).find().asArray()
+         atlasClient.db(dbName).collection(collectionName).find(queryFilter)
+         .asArray()
          .then(result=> {
             resolve(result);
          })
@@ -148,3 +152,8 @@ exports.findAllDocs = function(dbName, collectionName) {
       }
    });
 }
+
+/* You can create other helper methods for the methods supported by 
+the RemoteMongoCollection object. See 
+https://s3.amazonaws.com/stitch-sdks/js-react-native/docs/4.0.12/interfaces/remotemongocollection.html
+for a list of supported methods. */
