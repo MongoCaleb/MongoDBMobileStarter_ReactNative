@@ -59,7 +59,7 @@ export default class App extends React.Component {
 			transparent={false}
 			visible={this.state.modalVisible}
 			onRequestClose={() => {}}>
-				<View>
+				<SafeAreaView>
 					<Button
 						title = '[X] Close this modal'
 						onPress={() => {
@@ -69,7 +69,7 @@ export default class App extends React.Component {
 					<ScrollView> 
 						<Text style={styles.results}>{this.state.results} </Text>
 					</ScrollView>
-				</View>
+				</SafeAreaView>
 			</Modal>
 
 		return (
