@@ -1,5 +1,5 @@
 const React = require('react');
-const { Button, StyleSheet, Text, View, ScrollView, Modal, TextInput } = require('react-native');
+const { Button, StyleSheet, Text, View, SafeAreaView, ScrollView, Modal, TextInput } = require('react-native');
 const stitch = require('./stitch_helpers');
 const { Stitch, AnonymousCredential, UserApiKeyCredential } = require('mongodb-stitch-react-native-sdk');
 
@@ -73,7 +73,7 @@ export default class App extends React.Component {
 			</Modal>
 
 		return (
-			<View style={styles.container}>
+			<SafeAreaView style={styles.container}>
 				<Text style={styles.error}> {this.state.errorState} </Text>
 				<Text style={styles.title}>Stitch React Native Starter App</Text>
 				<Text> {loginStatus} </Text>
@@ -87,7 +87,7 @@ export default class App extends React.Component {
 					<Text style={styles.results}>{this.state.funcResults} </Text>
 				</ScrollView>
 				{dataModal}
-			</View>
+			</SafeAreaView>
 		);
 	}
 
